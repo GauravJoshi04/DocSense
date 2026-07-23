@@ -12,10 +12,12 @@ export async function ingestDocument(path){
     console.log("No. of chunks" , chunks.length);
     //console.log(chunks);
     // return chunks ;
+    
+    
 
     const vectors = await embedDocuments(chunks);
-    console.log(vectors.length);
-    console.log(vectors[0].length);
+    console.log("Number of vectors:", vectors.length);
+    console.log("Dimensions:", vectors[0].length);
 
 
     
