@@ -1,7 +1,7 @@
 import { embedDocuments } from "./embeddingService.js";
 import { loadPDF } from "./pdfLoader.js";
 import { splitDocuments } from "./textSplitter.js";
-
+import { storeVectors } from "./vectorStore.js"
 export async function ingestDocument(path){
 
     const documents = await loadPDF(path);
@@ -20,5 +20,7 @@ export async function ingestDocument(path){
     console.log("Dimensions:", vectors[0].length);
 
 
+    await storeVectors(chunks ,vectors);
+    
     
 }
