@@ -1,7 +1,7 @@
 import { embedDocuments } from "./embeddingService.js";
 import { loadPDF } from "./pdfLoader.js";
 import { splitDocuments } from "./textSplitter.js";
-import { storeVectors } from "./vectorStore.js"
+import { storeVectors } from "./pineconeService.js"
 export async function ingestDocument(path){
 
     const documents = await loadPDF(path);
