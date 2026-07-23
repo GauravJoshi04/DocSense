@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
- 
+dotenv.config();
+
 import { ingestDocument } from "./services/ingestionService.js";
 
-dotenv.config();
 
 const app = express();
 const Port = 3000;
