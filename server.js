@@ -7,7 +7,8 @@ import { retrieveDocuments } from "./services/retrievalService.js";
 import { answerQuestion } from "./services/aiService.js";
 
 import uploadRoute from "./routes/uploadRoute.js";
-import chatRoute from "./routes/chatRoute.js"
+import chatRoute from "./routes/chatRoute.js";
+
 const app = express();
 const PORT = 3000;
 app.use(express.json());

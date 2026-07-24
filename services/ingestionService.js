@@ -21,6 +21,13 @@ export async function ingestDocument(path){
 
 
     await storeVectors(chunks ,vectors);
+    const stats = {
+    pages: documents.length,
+    chunks: chunks.length,
+    vectors: vectors.length,
+    };
+
+return stats;
     
     
 }
