@@ -1,20 +1,23 @@
 import "dotenv/config";
 
-
 import express from "express";
 
 import { ingestDocument } from "./services/ingestionService.js";
 import { retrieveDocuments } from "./services/retrievalService.js";
- 
+import { answerQuestion } from "./services/aiService.js";
+
+import uploadRoute from "./routes/uploadRoute.js";
+import chatRoute from "./routes/chatRoute.js"
 const app = express();
-const Port = 3000;
+const PORT = 3000;
 app.use(express.json());
-app.listen(Port, () => {
-    console.log(`Server running on Port: ${Port}`);
+app.listen(PORT, () => {
+    console.log(`Server running on Port: ${PORT}`);
 });
 
-const filePath = "./data/pdfs/cg-internal-docs.pdf" ;
-await ingestDocument(filePath);
+// when post we ingest document
+app.use("/upload" , uploadRoute);
 
-const result = await retrieveDocuments("All full-time employees are expected to work for how many hours");
-console.log(JSON.stringify(result,null,2));
+// when we want response to a question
+app.use("/chat", chatRoute);
+
