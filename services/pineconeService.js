@@ -8,16 +8,16 @@ const pc = new Pinecone({
 
     const index = pc.index("docsense");
 
-export async function storeVectors(chunks, vectors) {
+export async function storeVectors(chunks, vectors ,documentId) {
     
     const records = chunks.map((chunk, index) => ({
 
-        id: `chunk-${index}`,
+        id: `${documentId}-chunk-${index}`,
 
         values: vectors[index],
 
         metadata: {
-
+            documentId: documentId,
             text: chunk.pageContent,
 
             source: chunk.metadata.source,
@@ -36,13 +36,16 @@ export async function storeVectors(chunks, vectors) {
 }
 
 // this takes user questio vector and help do semantic search in pinecone db
-export async function searchVectors(queryEmbedding) {
+export async function searchVectors(queryEmbedding , documentId) {
     
     const results = await index.query({
         vector: queryEmbedding,
         topK: 3,
         includeValues: false,
         includeMetadata: true,
+        filter: {
+            documentId: {"$eq": documentId}
+        }
     });
 
     return results.matches.map(match => ({

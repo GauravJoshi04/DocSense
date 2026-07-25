@@ -1,10 +1,10 @@
 import {embedQuery} from "./embeddingService.js" ;
 import { searchVectors } from "./pineconeService.js";
 
-export async function retrieveDocuments(question){
+export async function retrieveDocuments(question ,documentId){
     const queryEmbedding = await embedQuery(question);
 
-    const results = await searchVectors(queryEmbedding);
+    const results = await searchVectors(queryEmbedding ,documentId);
 
     return results ;
 }

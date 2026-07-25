@@ -1,47 +1,47 @@
-import { ingestDocument } from "../services/ingestionService.js" ;
+import { ingestDocument} from "../services/ingestionService.js";
+import fs from "fs/promises";
 
-export const uploadDocument = async(req , res)=>{
-    try{
-        // check if user uploaded file or not !
-        if (!req.file) {
+export const uploadDocument = async (req, res) => {
+
+    if (!req.file) {
         return res.status(400).json({
-        success: false,
-        message: "No PDF uploaded."
+            success: false,
+            message: "No PDF uploaded."
         });
+    }
+
+    const filePath = req.file.path;
+
+    try {
+
+        const stats = await ingestDocument(filePath);
+
+        // Cleanup (don't fail the request if cleanup fails)
+        try {
+            await fs.unlink(filePath);
+        } catch (err) {
+            console.warn("Failed to delete uploaded file:", err.message);
         }
-        // file Path is from the uploaded file user has given through multer middleware
-        const filePath = req.file.path ;  // from req.file property after multer is worked
-        
 
-       
-    //     return res.json({
-    //         success: true,
-    //         message: "File uploaded successfully",
-    //         file: {
-    //                 originalName: req.file.originalname,
-    //                 savedAs: req.file.filename,
-    //                 path: req.file.path,
-    //                 size: req.file.size,
-    //                 mimeType: req.file.mimetype
-    //     }
-    //    });
-         
-       
-    
-        const stats =  await ingestDocument(filePath) ;
-
-        res.json({
+        return res.json({
             success: true,
             message: "Document ingested successfully",
             fileName: req.file.originalname,
-            stats: stats
-    });
-    } catch (err){
-        console.log(err);
+            stats
+        });
 
-        res.status(500).json({
+    } catch (err) {
+
+        console.error(err);
+
+        // Optional: cleanup even if ingestion fails
+        try {
+            await fs.unlink(filePath);
+        } catch {}
+
+        return res.status(500).json({
             success: false,
             message: "Upload failed!"
         });
     }
-}
+};

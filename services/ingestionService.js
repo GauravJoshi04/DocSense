@@ -1,8 +1,12 @@
+import crypto from "crypto";
+
 import { embedDocuments } from "./embeddingService.js";
 import { loadPDF } from "./pdfLoader.js";
 import { splitDocuments } from "./textSplitter.js";
 import { storeVectors } from "./pineconeService.js"
 export async function ingestDocument(path){
+    // generating a random id for this document 
+    const documentId = crypto.randomUUID();
 
     const documents = await loadPDF(path);
 
@@ -20,8 +24,9 @@ export async function ingestDocument(path){
     console.log("Dimensions:", vectors[0].length);
 
 
-    await storeVectors(chunks ,vectors);
+    await storeVectors(chunks ,vectors ,documentId);
     const stats = {
+    documentId: documentId,    
     pages: documents.length,
     chunks: chunks.length,
     vectors: vectors.length,

@@ -3,15 +3,21 @@ import { answerQuestion } from "../services/aiService.js" ;
 
 export const chat = async (req ,res) => {
     try{
-       const { question } = req.body ;
-       if(!question){
+       const { question , documentId } = req.body ;
+        if (!question) {
         return res.status(400).json({
-            success: false ,
-            message: " Question is required !"
-        })
-       }
+        success: false,
+        message: "Question is required."
+        });
+        }
 
-       const retrieveDocs = await retrieveDocuments(question) ;
+        if (!documentId) {
+             return res.status(400).json({
+            success: false,
+            message: "Document ID is required."
+            });
+        }
+       const retrieveDocs = await retrieveDocuments(question ,documentId) ;
 
        const answer = await answerQuestion(question , retrieveDocs);
 
