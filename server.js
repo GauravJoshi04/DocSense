@@ -11,7 +11,7 @@ import uploadRoute from "./routes/uploadRoute.js";
 import chatRoute from "./routes/chatRoute.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors()); // allows cross origin connections to connect frontend and backend
 app.use(express.json());

@@ -12,6 +12,8 @@ function App() {
   const [answer, setAnswer] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
 
+  const [stats, setStats] = useState(null)
+
 
   function handleFileChange(event) {
     const selectedFile = event.target.files[0]
@@ -47,11 +49,9 @@ function App() {
       }
 
       setDocumentId(data.stats.documentId)
+      setStats(data.stats)
 
-      setMessage(
-    'Uploaded successfully! ' + data.stats.chunks + ' chunks indexed.'
-     )
-
+      setMessage('Document indexed successfully.')
     } catch (error) {
 
       console.error(error)
@@ -131,59 +131,131 @@ function App() {
 
           <p>Upload a PDF and ask questions about it.</p>
 
-          <input
-            type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
-          />
+          <label className="upload-box">
+          <span className="upload-icon">📄</span>
 
-          {file && (
-            <p>
-              Selected file: <strong>{file.name}</strong>
-            </p>
-          )}
+          <span className="upload-title">
+          {file ? file.name : 'Choose a PDF document'}
+          </span>
+
+          <span className="upload-subtitle">
+             {file ? 'Document selected' : 'PDF files only'}
+         </span>
+
+            <input
+             type="file"
+              accept=".pdf"
+            onChange={handleFileChange}
+             />
+           </label>
 
           <button
             onClick={handleUpload}
             disabled={loading}
           >
-            {loading ? 'Uploading...' : 'Upload PDF'}
+            {loading ? 'Processing document...' : 'Upload PDF'}
           </button>
 
-          {message && <p>{message}</p>}
+          {message && !stats && (
+  <div className="upload-status">
+    <span className="status-icon">!</span>
+
+    <div>
+      <strong>Upload status</strong>
+      <p>{message}</p>
+    </div>
+  </div>
+)}
+
+{stats && (
+  <div className="document-card">
+
+    <div className="document-header">
+      <span className="document-icon">📄</span>
+
+      <div>
+        <strong>{file?.name}</strong>
+        <p>Document ready</p>
+      </div>
+    </div>
+
+    <div className="document-stats">
+
+      <div>
+        <strong>{stats.pages}</strong>
+        <span>Pages</span>
+      </div>
+
+      <div>
+        <strong>{stats.chunks}</strong>
+        <span>Chunks</span>
+      </div>
+
+      <div>
+        <strong>{stats.vectors}</strong>
+        <span>Vectors</span>
+      </div>
+
+      </div>
+
+      </div>
+       )}
 
         </section>
 
 
         <section className="chat-section">
 
-          <h2>Ask your document</h2>
+  <div className="chat-header">
+    <div>
+      <h2>Ask your document</h2>
+       <p>
+  {documentId
+    ? 'Ask anything about the uploaded PDF.'
+    : 'Upload a PDF to start asking questions.'}
+  </p> 
+    </div>
 
-          <input
-            type="text"
-            placeholder="What would you like to know?"
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-          />
+    <span className="ai-badge">AI</span>
+  </div>
 
-          <button
-            onClick={handleChat}
-            disabled={chatLoading || !documentId}
-          >
-            {chatLoading ? 'Thinking...' : 'Ask'}
-          </button>
+  <div className="question-box">
 
-          {answer && (
-            <div className="answer">
+    <input
+      type="text"
+      placeholder="What would you like to know?"
+      value={question}
+      onChange={(event) => setQuestion(event.target.value)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          handleChat()
+        }
+      }}
+    />
 
-              <h3>DocSense</h3>
+    <button
+  onClick={handleChat}
+  disabled={chatLoading || !documentId}
+ >
+  {chatLoading ? 'Thinking...' : 'Ask'}
+   </button>
 
-              <p>{answer}</p>
+  </div>
 
-            </div>
-          )}
+  {answer && (
+    <div className="answer">
 
-        </section>
+      <div className="answer-header">
+        <span className="answer-icon">✦</span>
+        <strong>DocSense</strong>
+      </div>
+
+      <p>{answer}</p>
+
+    </div>
+  )}
+
+</section>
 
       </main>
 
